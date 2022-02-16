@@ -1,5 +1,7 @@
-trigger CorporationTrigger on Corporation__c (before insert) {
+trigger CorporationTrigger on Corporation__c (before insert, after update) {
 
-    SingletonHandler.tryInstance(Trigger.new);
+    if (Trigger.isBefore && Trigger.isInsert){
+        SingletonHandlerUtil handlerUtil = new SingletonHandlerUtil(Trigger.new);
+    }
 
 }
