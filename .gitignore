@@ -45,3 +45,4 @@ $RECYCLE.BIN/
 README.md
 .prettierignore
 .prettierrc
+force-app/main/default/classes/Temp

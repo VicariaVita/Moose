@@ -7,9 +7,10 @@ public with sharing class BatchTask implements Database.Batchable<sObject> {
             //'SELECT Task.Account.Owner.Name, Task.Account.Id FROM TASK WHERE Id =: id'
         );
     }
+
     public void execute(Database.BatchableContext bc, List<Task> tasks){
 
-        List<Account> accounts = new List<Account>();
+        Set<Account> accounts = new Set<Account>();
 
         for (Task current : tasks){
             current.Account_Owner__c = current.Account.Owner.Name;
@@ -18,7 +19,7 @@ public with sharing class BatchTask implements Database.Batchable<sObject> {
             accounts.add(current.Account);
         }
         update tasks;
-        update accounts;
+        update new List<Account>(accounts);
     }
 
     public void finish(Database.BatchableContext bc){

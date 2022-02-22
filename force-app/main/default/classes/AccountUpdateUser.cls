@@ -9,6 +9,11 @@ public with sharing class AccountUpdateUser {
 
     Task[] tskNewArray = [SELECT Id, WhatId FROM Task WHERE WhatId IN : ids];
 
+    Integer count = [SELECT COUNT() FROM User WHERE Isactive = TRUE];
+    Integer rand = Math.floor(Math.random() * count).intValue();
+    User randUser = [SELECT Name FROM User
+      WHERE Isactive = TRUE LIMIT 1 OFFSET :rand];
+
     Map<Id, List<Task>> taskMap = new Map<Id, List<Task>>();
     for (Task task : tskNewArray){
       if (taskMap.containsKey(task.WhatId)){
@@ -30,13 +35,7 @@ public with sharing class AccountUpdateUser {
     }
   }
 
-
   private static List<Task> putRandomUser(List<Task> tasks){
-    Integer count = [SELECT COUNT() FROM User WHERE Isactive = TRUE];
-    Integer rand = Math.floor(Math.random() * count).intValue();
-    User randUser = [SELECT Name FROM User
-      WHERE Isactive = TRUE LIMIT 1 OFFSET :rand];
-
     for (Task curTask : tasks) {
       curTask.OwnerId = randUser.Id;
     }

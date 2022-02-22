@@ -9,8 +9,9 @@ public with sharing class SingletonHandler {
         if (instance == null && !isInstantiated) {
             System.debug('creating NEW instance');
             instance = new SingletonHandler(corps);
-            isInstantiated = true; //this doesn't do anything
+            //isInstantiated = true; //this doesn't do anything
         }
+        System.debug(instance + ' ' + isInstantiated);
         return instance;
     }
 
@@ -21,8 +22,8 @@ public with sharing class SingletonHandler {
         ];
 
         for (Corporation__c corp : corps){
-            for (Director__c curDirector : assignedDirectors){
-                if (corp.Director__c == curDirector.Id){
+            for (Director__c director : assignedDirectors){
+                if (corp.Director__c == director.Id){
                     System.debug('reached error');
                     corp.addError('This director already assigned to other Corp');
                 }
@@ -32,5 +33,6 @@ public with sharing class SingletonHandler {
             isInstantiated = true; // GAME CHANGER
             update director;
         }
+        //вызвать тут гетинстанс
     }
 }

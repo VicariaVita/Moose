@@ -9,7 +9,7 @@ public with sharing class BatchContact implements Database.Batchable<Contact> {
 
     public void execute(Database.BatchableContext bc, List<Contact> contacts){
 
-        List<Account> accounts = new List<Account>();
+        Set<Account> accounts = new Set<Account>();
 
         for (Contact current : contacts){
             current.MailingStreet = current.Account.BillingStreet;
@@ -23,7 +23,7 @@ public with sharing class BatchContact implements Database.Batchable<Contact> {
             accounts.add(current.Account);
         }
         update contacts;
-        update accounts;
+        update new List<Account>(accounts);
     }
 
     public void finish(Database.BatchableContext bc){

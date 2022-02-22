@@ -11,10 +11,10 @@ global class ContactIterator implements Iterator<Contact>{
             Contact.Account.BillingPostalCode,
             Contact.Account.BillingCountry
             FROM Contact
-            WHERE id = '0035j00000INx5OAAT'
-            //WHERE Is_Synced__c = false
+            //WHERE id = '0035j00000INx5OAAT'
+            WHERE Is_Synced__c = false
         ];
-        i=0;
+        i = 0;
     }
   
     global boolean hasNext(){
@@ -30,6 +30,6 @@ global class ContactIterator implements Iterator<Contact>{
             return null;
         }
         i++;
-        return contacts[i-1];
+        return contacts[i - 1];
     }
 }

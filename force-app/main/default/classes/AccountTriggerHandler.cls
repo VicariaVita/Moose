@@ -5,25 +5,23 @@ public with sharing class AccountTriggerHandler{
         Set<Id> accountIds = new Set<Id>();
 
         for(Id accountId : newMap.keySet() ){
-            if (oldMap.get(accountId).BillingStreet !=
-            newMap.get(accountId).BillingStreet){
+            if (oldMap.get(accountId).BillingStreet != newMap.get(accountId).BillingStreet){
                 accountIds.add(accountId);
             }
         }
         
-        if (accountIds != null){
+        if (!accountIds.isEmpty()){
             //futureContactUpdate(accountIds);
 
-            System.enqueueJob(new AccountQueue(
-                [SELECT Id FROM Contact WHERE Contact.AccountId IN : accountIds]
-            ));
+            List<Contact> contactsToUpdate = [SELECT Id FROM Contact WHERE Contact.AccountId IN : accountIds];
+            System.enqueueJob(new AccountQueue(contactsToUpdate));
 
         }
     }
 
     @future
     public static void futureContactUpdate(Set<Id> accountIds){
-        Contact[] contacts = [SELECT Id FROM Contact WHERE Contact.AccountId IN : accountIds];
+        Contact[] contacts = [SELECT Id FROM Contact WHERE Contact.AccountId IN :accountIds]; // двоеточие слитно!
 
         for (Contact current : contacts){
             current.Is_Synced__c = false;
