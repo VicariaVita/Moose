@@ -60,7 +60,7 @@ public with sharing class AccountCallouts {
         System.debug(response.getStatusCode());
     }
     
-    public void updateAccount(String id, String name, String website){
+/*     public void updateAccount(String id, String name, String website){
         Http http = new Http();
         HttpRequest request = new HttpRequest();
         request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/' + id);
@@ -71,5 +71,24 @@ public with sharing class AccountCallouts {
         HttpResponse response = http.send(request);
 
         System.debug(response.getStatusCode());
+    } */
+
+    public void updateFullAccount(Account account){
+        Http http = new Http();
+        HttpRequest request = new HttpRequest();
+        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/');
+        request.setMethod('PATCH');
+        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
+
+        Map<String, Object> mapToGo = new Map<String, Object>();
+        mapToGo.put('Account', account);
+        String serialized = JSON.serialize(mapToGo);
+        
+        request.setBody(serialized);
+
+        HttpResponse response = http.send(request);
+
+        System.debug(response.getStatusCode());
+
     }
 }

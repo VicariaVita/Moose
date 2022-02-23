@@ -35,7 +35,8 @@ global class AccountService {
     }
 
     //НЕ ЧИСТИТ ФИЛД
-    @HttpPatch
+    //OLD
+/*     @HttpPatch
     global static ID updateAccount() {
         RestRequest request = RestContext.request;
         String id = request.requestURI.substring(request.requestURI.lastIndexOf('/') + 1);
@@ -46,6 +47,16 @@ global class AccountService {
         for(String fieldName : params.keySet()) {
             account.put(fieldName, params.get(fieldName));
         }
+        update account;
+        return account.Id;
+    } */
+
+    @HttpPatch
+    global static ID updateFullAccount() {
+        RestRequest request = RestContext.request;
+
+        SObject account = (Account)JSON.deserialize(request.requestbody.tostring(), Account.class);
+
         update account;
         return account.Id;
     }
