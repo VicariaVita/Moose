@@ -1,94 +1,58 @@
 public with sharing class AccountCallouts {
     
+    private final static String callout = 'callout:MooseAPI/services/apexrest/Accounts/';
+    private final static String header = 'Content-Type';
+    private final static String headerType = 'application/json;charset=UTF-8';
 
-    public Account getAccountById(String id) {
-        HttpRequest request = new HttpRequest();
-        Http http = new Http();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/' + id);
-        request.setMethod('GET');
-        HttpResponse response = http.send(request);
-
-        System.debug(response.getStatusCode());
+    public static Account getAccountById(String id) {
+        HttpResponse response = sendRequest('GET', callout + id);
         Account account = (Account) JSON.deserialize(response.getBody(), Type.forName('Account'));
         return account;
     }
 
-    public String createAccount(String name, String rating, String website){
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/');
-        request.setMethod('POST');
-        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
-/*         request.setBody('{"name":"' + name +
-                '", "website":"' + website +
-                '", "rating":"' + rating + 
-                '"}'); */
-        request.setBody(String.format('\'{\'"name":"{0}", "website":"{1}", "rating":"{2}"\'}\'',
-                                    new String[]{name, website, rating}));
-        HttpResponse response = http.send(request);
-
-        //не возвращает 201! просто 200
-        System.debug(response.getStatusCode());
-
-        //String id = (String)JSON.deserialize(response.getBody(), String);
-        //Map<String, Object> m = (Map<String, Object>)JSON.deserializeUntyped(response.getBody());
-        //String id = m.get('id');
+    public static String createAccount(Account account){
+        HttpResponse response = sendRequest('POST', callout, JSON.serialize(account));
         return response.getBody();
+    }
+
+    public static void deleteAccount(String id){
+        sendRequest('DELETE', callout + id);
+    }
+
+    public static void upsertAccount(Account account){
+        sendRequest('PUT', callout, JSON.serialize(account));
+    }
+
+    public static void updateAccount(Account account){
+
+        //account.Id = account.InregrationId__c; //тэкс
+
+        sendRequest('PATCH', callout, JSON.serialize(account));
+    }
+
+    private static HttpResponse sendRequest(String method, String endPoint, String body){
+        HttpRequest request = new HttpRequest();
+        request.setMethod(method);
+        request.setEndpoint(endPoint);
+        request.setHeader(header, headerType);
+
+        if (String.isNotBlank(body)) request.setBody(body);
+
+        Http http = new Http();
+        HttpResponse response = http.send(request);
+
+        if(response.getStatusCode()!=200){
+            System.debug('ERROR Send Request - Status Code: ' + response.getStatusCode());
+            throw new MyRestException(response.getStatus());
+        }
+        return response;
 
     }
 
-    public void deleteAccount(String id){
-        HttpRequest request = new HttpRequest();
-        Http http = new Http();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/' + id);
-        request.setMethod('DELETE');
-        HttpResponse response = http.send(request);
-
-        System.debug(response.getStatusCode());
+    // почему просто Null не передавать методу выше
+    private static HttpResponse sendRequest(String method, String endPoint){
+        return sendRequest(method, endPoint, null);
     }
 
-    public void upsertAccount(String id, String name, String rating){
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/');
-        request.setMethod('PUT');
-        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
-        request.setBody(String.format('\'{\'"name":"{0}", "rating":"{1}", "id":"{2}"\'}\'',
-                                        new String[]{name, rating, id}));
-        HttpResponse response = http.send(request);
-
-        System.debug(response.getStatusCode());
-    }
-    
-/*     public void updateAccount(String id, String name, String website){
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/' + id);
-        request.setMethod('PATCH');
-        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
-        request.setBody(String.format('\'{\'"name":"{0}", "website":"{1}"\'}\'',
-                                        new String[]{name, website}));
-        HttpResponse response = http.send(request);
-
-        System.debug(response.getStatusCode());
-    } */
-
-    public void updateFullAccount(Account account){
-        Http http = new Http();
-        HttpRequest request = new HttpRequest();
-        request.setEndpoint('callout:MooseAPI/services/apexrest/Accounts/');
-        request.setMethod('PATCH');
-        request.setHeader('Content-Type', 'application/json;charset=UTF-8');
-
-        Map<String, Object> mapToGo = new Map<String, Object>();
-        mapToGo.put('Account', account);
-        String serialized = JSON.serialize(mapToGo);
-        
-        request.setBody(serialized);
-
-        HttpResponse response = http.send(request);
-
-        System.debug(response.getStatusCode());
-
-    }
+    private class MyRestException  extends Exception {}
 }

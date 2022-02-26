@@ -12,8 +12,10 @@ global class AccountService {
     }
 
     @HttpPost
-    global static ID createAccount(String name, String rating, String website) {
-        Account account = new Account(Name = name, Rating = rating, Website = website);
+    global static ID createAccount() {
+        RestRequest request = RestContext.request;
+
+        Account account = (Account)JSON.deserialize(request.requestbody.tostring(), Account.class);
         insert account;
         return account.Id;
     }
@@ -55,7 +57,7 @@ global class AccountService {
     global static ID updateFullAccount() {
         RestRequest request = RestContext.request;
 
-        SObject account = (Account)JSON.deserialize(request.requestbody.tostring(), Account.class);
+        Account account = (Account)JSON.deserialize(request.requestbody.tostring(), Account.class);
 
         update account;
         return account.Id;

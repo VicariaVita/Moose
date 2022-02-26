@@ -1,21 +1,8 @@
 public with sharing class SingletonHandler {
-    private static SingletonHandler instance;
     private static Boolean isInstantiated = false;
-    //public List<Corporation__c> corps;
 
-    //public void setCorps(List<Corporation__c> input){this.corps = input;}
-
-    public static SingletonHandler getInstance(List<Corporation__c> corps) {
-        if (instance == null && !isInstantiated) {
-            System.debug('creating NEW instance');
-            instance = new SingletonHandler(corps);
-            //isInstantiated = true; //this doesn't do anything
-        }
-        System.debug(instance + ' ' + isInstantiated);
-        return instance;
-    }
-
-    private SingletonHandler(List<Corporation__c> corps) {
+    public SingletonHandler(List<Corporation__c> corps) {
+        if (isInstantiated) return;
         Director__c[] assignedDirectors =
             [SELECT Id FROM Director__c
             WHERE Id IN (SELECT Director__c FROM Corporation__c)
@@ -33,6 +20,5 @@ public with sharing class SingletonHandler {
             isInstantiated = true; // GAME CHANGER
             update director;
         }
-        //вызвать тут гетинстанс
     }
 }

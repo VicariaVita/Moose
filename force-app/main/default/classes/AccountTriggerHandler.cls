@@ -1,6 +1,13 @@
 public with sharing class AccountTriggerHandler{
 
-    public static void afterUpdate(Account[] newList, Map<Id,Account> newMap, Account[] oldList, Map<Id,Account> oldMap){
+    public static void afterInsert(List<Account> accounts){
+        //System.enqueueJob(new AccountQueueCallout(accounts)); // вопрос
+
+        Set<Id> ids = new Set<Id>(new Map<Id, Account>(accounts).keySet());
+        futureCallout(ids);
+    }
+
+    public static void afterUpdate(Map<Id,Account> newMap, Map<Id,Account> oldMap){
         
         Set<Id> accountIds = new Set<Id>();
 
@@ -29,5 +36,16 @@ public with sharing class AccountTriggerHandler{
         }
         update contacts;
 
+    }
+
+    @future (callout = true)
+    public static void futureCallout(Set<Id> accountIds){
+        List<Account> accountsNew = [SELECT Id, Name FROM Account WHERE Id IN :accountIds]; //FIELDS (ALL)
+        for (Account account : accountsNew){
+            Account toGo = account.clone();
+            String id = AccountCallouts.createAccount(toGo);
+            account.InregrationId__c = id;
+        }
+        update accountsNew;
     }
 }
