@@ -1,10 +1,8 @@
 public with sharing class BatchTask implements Database.Batchable<sObject> {
 
     public Database.QueryLocator start(Database.BatchableContext bc) {
-        //ID id = '00T5j00000URCNKEA5';
         return Database.getQueryLocator(
             'SELECT Task.Account.Owner.Name, Task.Account.Id FROM TASK WHERE Is_Synced__c = false'
-            //'SELECT Task.Account.Owner.Name, Task.Account.Id FROM TASK WHERE Id =: id'
         );
     }
 

@@ -7,7 +7,7 @@ public with sharing class AccountUpdateUser {
 
     Set<Id> ids = new Set<Id>(new Map<Id, Account>(accounts).keySet());
 
-    Task[] tskNewArray = [SELECT Id, WhatId FROM Task WHERE WhatId IN : ids];
+    Task[] tskNewArray = [SELECT Id, WhatId FROM Task WHERE WhatId IN :ids];
 
     Integer count = [SELECT COUNT() FROM User WHERE Isactive = TRUE];
     Integer rand = Math.floor(Math.random() * count).intValue();

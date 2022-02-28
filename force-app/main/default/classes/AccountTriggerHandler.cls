@@ -28,7 +28,7 @@ public with sharing class AccountTriggerHandler{
 
     @future
     public static void futureContactUpdate(Set<Id> accountIds){
-        Contact[] contacts = [SELECT Id FROM Contact WHERE Contact.AccountId IN :accountIds]; // двоеточие слитно!
+        Contact[] contacts = [SELECT Id FROM Contact WHERE Contact.AccountId IN :accountIds];
 
         for (Contact current : contacts){
             current.Is_Synced__c = false;
@@ -40,10 +40,10 @@ public with sharing class AccountTriggerHandler{
 
     @future (callout = true)
     public static void futureCallout(Set<Id> accountIds){
-        List<Account> accountsNew = [SELECT Id, Name FROM Account WHERE Id IN :accountIds]; //FIELDS (ALL)
+        List<Account> accountsNew = [SELECT Id, Name FROM Account WHERE Id IN :accountIds];
         for (Account account : accountsNew){
             Account toGo = account.clone();
-            String id = AccountCallouts.createAccount(toGo);
+            String id = AccountCallouts.createAccount(toGo).getBody();
             account.InregrationId__c = id;
         }
         update accountsNew;

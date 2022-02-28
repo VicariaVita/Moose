@@ -4,30 +4,26 @@ public with sharing class AccountCallouts {
     private final static String header = 'Content-Type';
     private final static String headerType = 'application/json;charset=UTF-8';
 
-    public static Account getAccountById(String id) {
+    public static HttpResponse getAccountById(String id) {
         HttpResponse response = sendRequest('GET', callout + id);
-        Account account = (Account) JSON.deserialize(response.getBody(), Type.forName('Account'));
-        return account;
+        //Account account = (Account) JSON.deserialize(response.getBody(), Type.forName('Account'));
+        return response;
     }
 
-    public static String createAccount(Account account){
-        HttpResponse response = sendRequest('POST', callout, JSON.serialize(account));
-        return response.getBody();
+    public static HttpResponse createAccount(Account account){
+        return sendRequest('POST', callout, JSON.serialize(account));
     }
 
-    public static void deleteAccount(String id){
-        sendRequest('DELETE', callout + id);
+    public static HttpResponse deleteAccount(String id){
+        return sendRequest('DELETE', callout + id);
     }
 
-    public static void upsertAccount(Account account){
-        sendRequest('PUT', callout, JSON.serialize(account));
+    public static HttpResponse upsertAccount(Account account){
+        return sendRequest('PUT', callout, JSON.serialize(account));
     }
 
-    public static void updateAccount(Account account){
-
-        //account.Id = account.InregrationId__c; //тэкс
-
-        sendRequest('PATCH', callout, JSON.serialize(account));
+    public static HttpResponse updateAccount(Account account){
+        return sendRequest('PATCH', callout, JSON.serialize(account));
     }
 
     private static HttpResponse sendRequest(String method, String endPoint, String body){
