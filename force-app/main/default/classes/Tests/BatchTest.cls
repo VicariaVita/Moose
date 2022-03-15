@@ -27,6 +27,8 @@ private class BatchTest { // можно ли протестировать ког
         String jobId = System.schedule('ScheduledApexTest', CRON_EXP, new BatchScheduler());
         Test.stopTest();
 
+        System.assert(jobId); // просто проверить что создался
+
 
         // ходит во вложенные асинки но они ничего не меняют (тут фейлятся ассерты)
         /* Account account = [SELECT Name, Account.Owner.Name,

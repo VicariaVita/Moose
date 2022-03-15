@@ -46,3 +46,4 @@ README.md
 .prettierignore
 .prettierrc
 force-app/main/default/classes/Temp
+force-app/main/default/lwc/Goat/

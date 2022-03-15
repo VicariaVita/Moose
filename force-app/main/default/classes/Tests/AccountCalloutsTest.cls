@@ -26,4 +26,11 @@ private class AccountCalloutsTest {
         System.assertEquals(response.getHeader('Content-Type'), 'application/json');
         System.assertEquals(response.getBody(), 'ID');
     }
+
+    @IsTest
+    static void testDelete(){
+        Test.setMock(HttpCalloutMock.class, new AccountHttpCalloutMock());
+        HttpResponse response = AccountCallouts.deleteAccount('some id');
+        System.assertEquals(response.getStatusCode(), 200);
+    }
 }

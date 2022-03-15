@@ -1,0 +1,1 @@
+{"attributes":{"type":"Account","url":"/services/data/v52.0/sobjects/Account/0015j00000VuZ86AAF"},"Name":"United Oil & Gas Corp.","Rating":"Hot","Website":"http://www.uos.com","Id":"0015j00000VuZ86AAF"}

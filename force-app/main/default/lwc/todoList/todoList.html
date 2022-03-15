@@ -1,0 +1,87 @@
+<template>
+    <lightning-card title="Maus List" icon-name="standard:record">
+        <div class="slds-var-m-around_medium">
+            <c-todo-search onfind={handleFind}>
+            </c-todo-search>
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <lightning-combobox
+                        name="category"
+                        label="Category"
+                        value={category}
+                        placeholder="All"
+                        options={categories}
+                        onchange={handleC}
+                    ></lightning-combobox>
+                </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-combobox
+                    name="priority"
+                    label="Priority"
+                    value={priority}
+                    placeholder="All"
+                    options={priorities}
+                    onchange={handleP}
+                ></lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item flexibility="auto" padding="around-small">
+                <lightning-combobox
+                    name="status"
+                    label="Status"
+                    value={completed}
+                    placeholder="All"
+                    options={statuses}
+                    onchange={handleS}
+                ></lightning-combobox>
+            </lightning-layout-item>
+        </lightning-layout>
+            <lightning-button
+                label="Create Todo"
+                class="slds-var-m-around_medium"
+                onclick={createNewTodo}
+            ></lightning-button>
+            <lightning-button
+                label="Refresh"
+                class="slds-var-m-around_medium"
+                onclick={refresh}
+            ></lightning-button>
+        </div>
+
+        <template if:true={displayed}>
+            <div class="slds-var-m-around_medium">
+                <lightning-layout>
+                    <template for:each={displayed} for:item="todo">
+                        <lightning-layout-item flexibility="auto" padding="around-small" key={todo.id}>
+                            <c-todo-item
+                                class="slds-show slds-is-relative"
+                                todo={todo}
+                                onrefresh={refresh}
+                            >
+                            </c-todo-item>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </div>
+        </template>
+        <template if:true={error}>
+            <div class="slds-var-m-around_medium">
+                <p class="slds-var-m-vertical_medium content">{error}</p>
+            </div>
+        </template>
+        <template if:true={emptyState}>
+            <div class="slds-var-m-around_medium">
+                <p class="slds-var-m-vertical_medium content center">
+                    No data to display.</p>
+            </div>
+        </template>
+
+        <template if:false={emptyState}>
+            <div class="slds-var-m-around_medium">
+                <p class="slds-var-m-vertical_medium content">
+                        Displaying {startingRecord} to {endingRecord} of {totalRecountCount} records.
+                        Page {page} of {totalPage}. </p>
+                <c-todo-paginator onprevious={previousHandler} onnext={nextHandler}></c-todo-paginator>
+            </div>
+        </template>
+    </lightning-card>
+</template>
